@@ -47,10 +47,10 @@ function extract(table, source){
 }
 
 
-function get_social(network){
+function get_social(network, inner){
 	if (network == 'fb'){
 		var outer = 'facebook';
-		var inner = 'posts';
+		var inner = inner;
 	} else {
 		var outer = 'twitter';
 		var inner = 'tweets';

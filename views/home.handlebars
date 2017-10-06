@@ -5,13 +5,19 @@
 	<div class="page-header">
 		<h4>Buscadores</h4>
 	</div>
-	<div class="col-sm-4">
+	<div class="col-sm-2">
 		<button class="btn btn-default" id="web">Obtener Artículos</button>
 	</div>
-	<div class="col-sm-4">
-		<button class="btn btn-default" id="fb">Facebook</button>
+	<div class="col-sm-2">
+		<button class="btn btn-default fb" data-inner="posts">Fb Posts</button>
 	</div>
-	<div class="col-sm-4">
+	<div class="col-sm-2">
+		<button class="btn btn-default fb" data-inner="reactions">Fb Reactions</button>
+	</div>
+	<div class="col-sm-2">
+		<button class="btn btn-default fb" data-inner="comments">Fb Comments</button>
+	</div>
+	<div class="col-sm-2">
 		<button class="btn btn-default" id="tw">Twitter</button>
 	</div>
 </div>
@@ -118,8 +124,8 @@
 		get_web_articles();
 	})
 
-	$('#fb').click(function(){
-		get_social('fb')
+	$('.fb').click(function(){
+		get_social('fb', $(this).data("inner"))
 	})
 
 	$('#tw').click(function(){

@@ -52,7 +52,33 @@ Facebook_Connector.prototype.get_posts = function(id){
 	})
 }
 
-Facebook_Connector.prototype.get_reaction = function(post){
+Facebook_Connector.prototype.save_posts = function(id=null, table=null){
+	var conn = this;
+	return new Promise(function(resolve, reject){
+		if(id===null){
+			return reject("The function requires an ID to query");
+		}
+		if (table == null){
+			return reject("The function requires a table destination to save")
+		}
+		conn.get_token().then(function(response){
+			conn.get_posts(id).then(function(response){
+				for (var i = 0; i < response.data.length;i++){
+					response.data[i].created_time = moment(response.data[i].created_time).toDate().toISOString();
+					if (response.data[i].message != null){
+						table.update({"id":response.data[i].id}, {"$set":response.data[i]},{upsert:true});
+					}
+				}
+				return resolve();
+			}).catch(function(reason){
+				return reject(reason);
+			})
+		});
+
+	})
+}
+
+Facebook_Connector.prototype.get_reactions = function(post){
 	var conn = this;
 	return new Promise(function(rsl, rjc){
 		var cursor = 'https://graph.facebook.com/v2.10/'+post.id+'?fields=reactions.type(LOVE).limit(0).summary(total_count).as(love_count),reactions.type(LIKE).limit(0).summary(total_count).as(like_count),reactions.type(WOW).limit(0).summary(total_count).as(wow_count),reactions.type(HAHA).limit(0).summary(total_count).as(haha_count),reactions.type(SAD).limit(0).summary(total_count).as(sad_count),reactions.type(ANGRY).limit(0).summary(total_count).as(angry_count)&access_token='+conn.token;
@@ -67,7 +93,7 @@ Facebook_Connector.prototype.get_reaction = function(post){
 	})
 }
 
-Facebook_Connector.prototype.post_reactions = function(id=null,table=null){
+Facebook_Connector.prototype.save_reactions = function(id=null,table=null){
 	var conn = this;
 	var promises = [];
 	return new Promise(function(resolve,reject){
@@ -78,9 +104,9 @@ Facebook_Connector.prototype.post_reactions = function(id=null,table=null){
 			return reject("The function requires a table destination to get from");
 		}
 		conn.get_token().then(function(token){
-			table.find({'from.id':id,"created_time":{"$gt":moment().subtract(7,'day').toDate().toISOString()}}).then(function(posts){
+			table.find({'from.id':id}).then(function(posts){
 				for (var i = 0; i < posts.length; i++){
-					promises.push(conn.get_reaction(posts[i]))
+					promises.push(conn.get_reactions(posts[i]))
 				}
 				Promise.all(promises).then(values => {
 					for (var i = 0; i < values.length; i++){
@@ -102,40 +128,77 @@ Facebook_Connector.prototype.post_reactions = function(id=null,table=null){
 					}
 					return resolve(posts);
 				}).catch(function(error){
-					console.log(error)
+					console.log(error);
+					return reject(error);
 				})
 			})
 		})
 	})
 }
 
-Facebook_Connector.prototype.get = function(id=null, table=null){
+Facebook_Connector.prototype.get_comments = function(post){
 	var conn = this;
+	var OP;
 	return new Promise(function(resolve, reject){
+		cursor = 'https://graph.facebook.com/v2.10/'+post.id+'/comments?access_token='+conn.token;
+		request(cursor,function(error,response,body){
+			if(!error){
+				OP = JSON.parse(body);
+				if (OP.error != null){
+					return reject(OP.error);
+				}
+				return resolve(OP)
+			} else {
+				console.log(error);
+				return reject(error);
+			}
+		})
+	})
+}
+
+Facebook_Connector.prototype.save_comments = function(id=null, table_posts=null, table_comments ){
+	var conn = this;
+	var promises = [];
+	return new Promise(function(resolve,reject){
 		if(id===null){
 			return reject("The function requires an ID to query");
 		}
-		if (table == null){
-			return reject("The function requires a table destination to save")
+		if (table_posts == null){
+			return reject("The function requires a table_posts source to get from");
 		}
-		conn.get_token().then(function(response){
-			conn.get_posts(id).then(function(response){
-				for (var i = 0; i < response.data.length;i++){
-					response.data[i].created_time = moment(response.data[i].created_time).toDate().toISOString();
-					if (response.data[i].message != null){
-						table.update({"id":response.data[i].id}, {"$set":response.data[i]},{upsert:true});
-					}
+		if (table_comments == null){
+			return reject("The function requires a table_comments source to get from");
+		}
+		conn.get_token().then(function(token){
+			table_posts.find({'from.id':id}).then(function(posts){
+				for (var i = 0; i < posts.length; i++){
+					promises.push(conn.get_comments(posts[i]))
 				}
-				return resolve();
-			}).catch(function(reason){
-				console.log(reason)
-				console.log(conn.token)
-				console.log(id);
-				return reject(reason);
+				Promise.all(promises).then(values => {
+					for (var i = 0; i < values.length; i++){
+						for (var j = 0; j < values[i]["data"].length; j++) {
+							console.log(values[i]["data"][j]);
+							if (values[i]["data"][j].hasOwnProperty('error')){
+								return reject(error);
+							} else {
+								console.log("saving");
+								console.log(values[i]["data"][j]);
+								values[i]["data"][j].post_id = posts[i].id;
+								table_comments.update({"id" : values[i]["data"][j].id}, {"$set":values[i]["data"][j]}, {upsert : true});
+							}
+						}
+					}
+					return resolve(posts);
+				}).catch(function(error){
+					console.log(error);
+					return reject(error);;
+				})
 			})
 		})
-
 	})
 }
+
+
+
 
 module.exports = Facebook_Connector;

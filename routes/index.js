@@ -98,7 +98,33 @@ router.post('/crawl/posts',function(req,resp){
 	if (req.body.userId == '153838434670411'){
 		console.log('Received it');
 	}
-	FB_CONN.get(req.body.userId,CONN.posts).then(function(){
+	FB_CONN.save_posts(req.body.userId,CONN.posts).then(function(){
+		resp.json({user:req.body.userId,saved:true});
+		return;
+	}).catch(function(){
+		console.log('Something went really wrong');
+	})
+})
+
+router.post('/crawl/reactions',function(req,resp){
+	if (req.body.userId == '153838434670411'){
+		console.log('Received it');
+	}
+	FB_CONN.save_reactions(req.body.userId,CONN.posts).then(function(){
+		console.log("saved");
+		resp.json({user:req.body.userId,saved:true});
+		return;
+	}).catch(function(){
+		console.log('Something went really wrong');
+	})
+})
+
+router.post('/crawl/comments',function(req,resp){
+	if (req.body.userId == '153838434670411'){
+		console.log('Received it');
+	}
+	FB_CONN.save_comments(req.body.userId, CONN.posts, CONN.comments).then(function(){
+		console.log("saved");
 		resp.json({user:req.body.userId,saved:true});
 		return;
 	}).catch(function(){

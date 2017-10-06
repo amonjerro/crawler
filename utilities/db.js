@@ -4,6 +4,7 @@ var mongodb = require('monk')('localhost:'+process.env.MPORT+'/'+process.env.MDB
 function DB(){
 	this.articles = mongodb.get('articles');
 	this.posts = mongodb.get('posts');
+	this.comments = mongodb.get('comments');
 	this.tweets = mongodb.get('tweets');
 	this.webpages = mongodb.get('web_pages');
 }
