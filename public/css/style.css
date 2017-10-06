@@ -1,0 +1,33 @@
+body{
+	background-color: #ddd
+}
+.centered {
+	text-align:center;
+}
+.page-header{
+	margin-top:0px;
+}
+.section {
+	margin-bottom:30px;
+}
+.container{
+	background-color:#fff;
+}
+.jumbotron{
+	background-color:#3245CD;
+	color:#FFF;
+	margin-left:-15px;
+	margin-right:-15px;
+}
+.container .jumbotron{
+	border-radius:0px;
+}
+.btn, .btn:focus{
+	background-color:#1de9b6;
+	border-color:#1de9b6;
+	transition:background-color 0.25s ease-in-out;
+}
+.btn:hover, .btn:active, .btn:active:focus{
+	background-color:#00b686;
+	border-color:#00b686;
+}

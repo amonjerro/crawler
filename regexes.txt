@@ -1,0 +1,8 @@
+Obtiene links de luces, tvmas, viu, vamos y somos para El Comercio
+\.pe\/(t?l?[u-w]\w+)?(somos)?\/
+
+Obtiene links de Deporte Total y Casa y Mas. El Comercio
+\.pe\/\w+-
+
+Obtiene links de Deportes, Ocio y Brandview de la Nacion.
+\.com\/[dbo][^p]

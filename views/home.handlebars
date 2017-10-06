@@ -1,0 +1,136 @@
+<div class="jumbotron centered">
+	<h3>Scraper Cognitiva</h3>
+</div>
+<div class="centered clearfix section">
+	<div class="page-header">
+		<h4>Buscadores</h4>
+	</div>
+	<div class="col-sm-4">
+		<button class="btn btn-default" id="web">Obtener Artículos</button>
+	</div>
+	<div class="col-sm-4">
+		<button class="btn btn-default" id="fb">Facebook</button>
+	</div>
+	<div class="col-sm-4">
+		<button class="btn btn-default" id="tw">Twitter</button>
+	</div>
+</div>
+<div class="centered clearfix section">
+	<div class="page-header">
+		<h4>Artículos</h4>
+	</div>
+	<div class="col-sm-12 form-group">
+		<label for="ar_source" class="control-label">Fuente</label>
+		<select class="form-control" id="ar_source">
+			<option value="WS-CA-">Cámara Costarricense de la Industria Alimentaria</option>
+			<option value="WS-CS-">Caja Costarricense del Seguro Social</option>
+			<option value="WS-CO-">Diario El Comercio</option>
+			<option value="WS-EF-">Agencia EFE</option>
+			<option value="WS-MI-">Ministerio de Salud del Perú</option>
+			<option value="WS-NA-">Diario La Nación</option>
+			<option value="WS-PA-">Organización Panamericana de Salud</option>
+			<option value="WS-PE-">Proetica</option>
+			<option value="WS-UN-">Naciones Unidas</option>
+			<option value="WS-WH-">Organización Mundial de la Salud</option>
+		</select>
+	</div>
+	<div class="col-sm-6">
+		<button class="btn btn-default" id="test">Analizar artículo</button>
+	</div>
+	<div class="col-sm-6" data-target="ar">
+		<button class="btn btn-default extractor">Extraer</button>
+	</div>
+</div>
+<div class="centered clearfix section">
+	<div class="page-header">
+		<h4>Posts</h4>
+	</div>
+	<div class="col-sm-12 form-group">
+		<label for="fb_source" class="control-label">Fuente</label>
+		<select class="form-control" id="fb_source">
+			<option value="393255887419653">Contribuyentes Por Respeto</option>
+			<option value="239988804218">Defensoría del Pueblo Perú</option>
+			<option value="238168552902723">Seguro Social de Salud del Perú - EsSalud</option>
+			<option value="340706806078141">SUSALUDPerú</option>
+			<option value="89613772643">CNN en Español</option>
+			<option value="233762686665234">Congreso de la República del Perú</option>
+			<option value="198440935694">ANASOVI</option>
+			<option value="94604237016">Diario La República</option>
+			<option value="50842855867">Perú21.pe</option>
+			{{!-- <option value="153838434670411">Caretas</option> --}}
+			<option value="116942331674902">Glenda Umaña</option>
+			<option value="119189668150973">Semanario Universidad</option>
+			<option value="107504462605732">Teletica 7</option>
+			<option value="152914224736727">Banco Mundial</option>
+			<option value="143615227116">Defensoría de los Habitantes de la República de Costa Rica</option>
+			<option value="58895017663">Banco Interamericano de Desarrollo</option>
+			<option value="346203887439">Naciones Unidas</option>
+			<option value="199246583438202">Luis Guillero Solis Rivera</option>
+			<option value="33827916464">OCDE en Español</option>
+			<option value="154298834585547">Cepal</option>
+		</select>
+	</div>
+	<div class="col-sm-6">
+		<button class="btn btn-default" id="test">Analizar post</button>
+	</div>
+	<div class="col-sm-6" data-target="fb">
+		<button class="btn btn-default extractor">Extraer</button>
+	</div>
+</div>
+<div class="centered clearfix section">
+	<div class="page-header">
+		<h4>Tweets</h4>
+	</div>
+	<div class="col-sm-12 form-group">
+		<label for="tw_source" class="control-label">Fuente</label>
+		<select class="form-control" id="tw_source">
+			<option value="jdealthaus">Jaime de Althaus</option>
+			<option value="UrsulaLetonaP">Úrsula Letona</option>
+			<option value="Minsa_Peru">MINSA</option>
+			<option value="drhuerta">Elmer Huerta</option>
+			<option value="ppkamigo">Pedro Pablo Kuczynski</option>
+			<option value="KenjiFujimoriH">Kenji Fujimori</option>
+			<option value="RPPNoticias">RPP</option>
+			<option value="KeikoFujimori">Keiko Fujimori</option>
+			<option value="VeroLinaresC">Verónica Linares</option>
+			<option value="uterope">Utero</option>
+			<option value="claudiaizaguirr">Claudia Izaguirre</option>
+			<option value="ameliarueda">Amelia Rueda</option>
+			<option value="LorellyTs">Lorelly Trejos</option>
+			<option value="GardodeCQ">Edgardo Araya</option>
+			<option value="matrncio63">Marvin Atencio</option>
+			<option value="DiputadoLimon">Gerardo Vargas Rojas</option>
+			<option value="alvarez_desanti">Antonio Álvarez Desanti</option>
+			<option value="PizaRodolfo">Rodolfo Piza</option>
+			<option value="rortizfab">Rafael Ortiz</option>
+			<option value="telenoticias7">Telenoticias</option>
+		</select>
+	</div>
+	<div class="col-sm-6">
+		<button class="btn btn-default" id="test">Analizar tweet</button>
+	</div>
+	<div class="col-sm-6" data-target="tw">
+		<button class="btn btn-default extractor">Extraer</button>
+	</div>
+</div>
+<script>
+	$('#web').click(function(){
+		get_web_articles();
+	})
+
+	$('#fb').click(function(){
+		get_social('fb')
+	})
+
+	$('#tw').click(function(){
+		get_social('tw')
+	})
+	$('#test').click(function(){
+		run_analysis();
+	})
+	$('.extractor').click(function(){
+		var table = $(this).parent().attr('data-target');
+		var source = $('#'+table+'_source').val();
+		extract(table,source);
+	})
+</script>
