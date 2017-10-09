@@ -1,5 +1,13 @@
-require('dotenv').config()
-var mongodb = require('monk')('localhost:'+process.env.MPORT+'/'+process.env.MDB);
+require('dotenv').config();
+
+var env = JSON.parse(process.env.VCAP_SERVICES);
+var mongoURI = env["compose-for-mongodb"][0]["credentials"]["uri"];
+var mongoSSLCA = env["compose-for-mongodb"][0]["credentials"]["ca_certificate_base64"];
+var options = {
+    ssl: true,
+    sslCA: mongoSSLCA,
+};
+var mongodb = require('monk')(mongoURI, options);
 
 function DB(){
 	this.articles = mongodb.get('articles');

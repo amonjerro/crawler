@@ -4,7 +4,8 @@
   "description": "Web Crawler",
   "main": "server.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "express-handlebars": "^3.0.0",
     "moment": "^2.18.1",
     "monk": "^6.0.3",
+    "node-schedule": "^1.2.5",
     "promise": "^8.0.1",
     "request": "^2.81.0",
     "twitter": "^1.7.1",
