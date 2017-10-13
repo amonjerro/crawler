@@ -20,6 +20,7 @@
   "author": "Cognitiva LA",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.17.2",
     "cheerio": "^1.0.0-rc.2",
     "crawler": "^1.0.5",
@@ -29,6 +30,7 @@
     "moment": "^2.18.1",
     "monk": "^6.0.3",
     "node-schedule": "^1.2.5",
+    "pg": "^7.3.0",
     "promise": "^8.0.1",
     "request": "^2.81.0",
     "twitter": "^1.7.1",

@@ -1,3 +1,5 @@
-var moment = require('moment');
+var blep = {'id':12345,'name':'Waka Waka'};
+var blep_keys = Object.keys(blep);
 
-console.log(moment().toDate().toISOString());
+
+console.log(blep_keys);

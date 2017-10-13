@@ -3,16 +3,20 @@ const router = express.Router();
 const Promise = require('promise');
 const request = require('request');
 const bodyParser = require('body-parser');
-const db = require('../utilities/db.js');
+const no_sql = require('../utilities/no_sql.js');
+
 const fb = require('../utilities/facebook-connector.js');
 const tw = require('../utilities/twitter_connector.js');
 const nlu = require('../utilities/nlu_wrapper.js');
 const fs = require('fs');
 
 const FB_CONN = new fb();
-const CONN = new db();
+const NSQL_CONN = new no_sql();
+
 const TW_CONN = new tw();
 const NLU_CONN = new nlu();
+
+const model_routes = require('./models.js');
 
 // router.use(function(req,res,next){
 // 	console.log(req.method +' method received for URL: ' + req.url);
@@ -21,6 +25,8 @@ const NLU_CONN = new nlu();
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}))
+
+router.use('/api',model_routes);
 
 router.get('/', function(req, res) {
   res.render('home');
@@ -98,7 +104,7 @@ router.post('/crawl/posts',function(req,resp){
 	if (req.body.userId == '153838434670411'){
 		console.log('Received it');
 	}
-	FB_CONN.save_posts(req.body.userId,CONN.posts).then(function(){
+	FB_CONN.save_posts(req.body.userId,NSQL_CONN.posts).then(function(){
 		resp.json({user:req.body.userId,saved:true});
 		return;
 	}).catch(function(){
@@ -110,7 +116,7 @@ router.post('/crawl/reactions',function(req,resp){
 	if (req.body.userId == '153838434670411'){
 		console.log('Received it');
 	}
-	FB_CONN.save_reactions(req.body.userId,CONN.posts).then(function(){
+	FB_CONN.save_reactions(req.body.userId,NSQL_CONN.posts).then(function(){
 		console.log("saved");
 		resp.json({user:req.body.userId,saved:true});
 		return;
@@ -123,7 +129,7 @@ router.post('/crawl/comments',function(req,resp){
 	if (req.body.userId == '153838434670411'){
 		console.log('Received it');
 	}
-	FB_CONN.save_comments(req.body.userId, CONN.posts, CONN.comments).then(function(){
+	FB_CONN.save_comments(req.body.userId, NSQL_CONN.posts, NSQL_CONN.comments).then(function(){
 		console.log("saved");
 		resp.json({user:req.body.userId,saved:true});
 		return;
@@ -133,7 +139,7 @@ router.post('/crawl/comments',function(req,resp){
 })
 
 router.post('/crawl/tweets', function(req,resp){
-	TW_CONN.get(req.body.userId,CONN.tweets).then(function(){
+	TW_CONN.get(req.body.userId,NSQL_CONN.tweets).then(function(){
 		resp.json({user:req.body.userId,saved:true});
 		return;
 	})
@@ -245,18 +251,18 @@ router.post('/crawl/content',function(req,resp){
 
 router.get('/crawl/extract',function(req,resp){
 	if (req.query.table == 'fb'){
-		CONN.extract_posts(req.query.source,resp);
+		NSQL_CONN.extract_posts(req.query.source,resp);
 	} else if (req.query.table == 'tw'){
-		CONN.extract_tweets(req.query.source,resp);
+		NSQL_CONN.extract_tweets(req.query.source,resp);
 	} else if (req.query.table = 'ar'){
-		CONN.extract_articles(req.query.source,resp);
+		NSQL_CONN.extract_articles(req.query.source,resp);
 	}
 })
 
 router.post('/save',function(req,resp){
-	CONN.isNew(req.body).then(function(is){
+	NSQL_CONN.isNew(req.body).then(function(is){
 		if(is){
-			CONN.save(req.body);
+			NSQL_CONN.save(req.body);
 			resp.json({saved:true})
 			return;
 		} else {
@@ -267,9 +273,9 @@ router.post('/save',function(req,resp){
 })
 
 router.get('/test/analysis',function(req,resp){
-	CONN.articles.find({},{limit:1}).then(function(values){
+	NSQL_CONN.articles.find({},{limit:1}).then(function(values){
 		try{
-			NLU_CONN.run_article(values[0],CONN.articles);
+			NLU_CONN.run_article(values[0],NSQL_CONN.articles);
 			resp.json({ok:true});
 		} catch(e){
 			console.log(e);
@@ -279,6 +285,14 @@ router.get('/test/analysis',function(req,resp){
 		resp.json(values);
 	})
 })
+
+// router.get('/sql/test',function(req,resp){
+// 	SQL_CONN.get('entidades',null,['id','IN',['11','12','19'],'AND','nombre','=','Lugar']).then(function(data){
+// 		resp.json(data);
+// 	}).catch(function(err){
+// 		resp.json(err);
+// 	})
+// })
 
 router.post('/write',function(req,resp){
 	var path = __dirname;
@@ -299,5 +313,7 @@ router.post('/write',function(req,resp){
 		})
 	})	
 })
+
+
 
 module.exports = router;

@@ -6,3 +6,4 @@ outputs/*
 sets/*
 .DS_Store
 .env
+vcap_services.json
