@@ -18,13 +18,12 @@ const ComSec = new Sec(SQL_CONN,'accesos','sys_id','sys_hash');
 const Adm 	= new Admin(SQL_CONN);
 
 
-
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}))
 
 router.use(function(req,resp,next){
 	if (req.query.sys_id == null || req.query.sys_token == null){
-		return resp.json({message:'Authorization Denied'});
+		return resp.json({message:'Authorization Denied',query:req.query});
 	}
 	ComSec.verify(req.query.sys_id,req.query.sys_token).then(function(){
 		next();
@@ -32,6 +31,12 @@ router.use(function(req,resp,next){
 		return resp.json(error_message);
 	})
 })
+
+// router.get('/sys_up_password',function(req,resp){
+// 	ComSec.updateUserPass('OMQGI%6=OvfHwjE5I|jFemX@v86f@0uA','7r5EsWW75MHDovjI%V8K@fk!=OaArSBP').then(function(values){
+// 		resp.json(true);
+// 	})
+// })
 
 
 router.get('/entities',function(req,resp){
