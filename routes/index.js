@@ -18,13 +18,15 @@ const NLU_CONN = new nlu();
 
 const model_routes = require('./models.js');
 
-// router.use(function(req,res,next){
-// 	console.log(req.method +' method received for URL: ' + req.url);
-// 	next();
-// })
+var running = false;
 
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({extended: false}))
+router.use(function(req, res, next){
+	if(!running) {
+		next();
+	}
+});
 
 router.use('/api',model_routes);
 
@@ -273,8 +275,11 @@ router.post('/save',function(req,resp){
 })
 
 router.get('/test/analysis',function(req,resp){
+	console.log("testing analysis");
 	NSQL_CONN.articles.find({},{limit:1}).then(function(values){
+		console.log("enterered");
 		try{
+			console.log(values[0]);
 			NLU_CONN.run_article(values[0],NSQL_CONN.articles);
 			resp.json({ok:true});
 		} catch(e){
@@ -285,14 +290,6 @@ router.get('/test/analysis',function(req,resp){
 		resp.json(values);
 	})
 })
-
-// router.get('/sql/test',function(req,resp){
-// 	SQL_CONN.get('entidades',null,['id','IN',['11','12','19'],'AND','nombre','=','Lugar']).then(function(data){
-// 		resp.json(data);
-// 	}).catch(function(err){
-// 		resp.json(err);
-// 	})
-// })
 
 router.post('/write',function(req,resp){
 	var path = __dirname;
@@ -313,6 +310,7 @@ router.post('/write',function(req,resp){
 		})
 	})	
 })
+
 
 
 

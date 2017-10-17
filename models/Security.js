@@ -10,6 +10,7 @@ module.exports = class Security {
 		this.password_field = p;
 		this.saltRounds = saltRounds;
 	}
+	
 
 	verify(user,pw){
 		var slf = this;

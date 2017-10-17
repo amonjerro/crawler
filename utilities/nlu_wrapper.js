@@ -28,7 +28,7 @@ Analyzer.prototype.run_article = function(article,table){
 	if (article.analysis != null){
 		throw NLUError('Article has been run over analysis already');
 	}
-
+	console.log("running article");
 	//Set up parameters for analysis of article.
 	var parameters = {
 		text:article.content,
@@ -44,10 +44,12 @@ Analyzer.prototype.run_article = function(article,table){
 
 	//Proceed with the analysis call
 	this.nlu.analyze(parameters,function(err,response){
+		console.log("analyzed");
 		if (err){
 			console.log(err)
 			throw NLUError("NLU Analysis has failed for article");
 		} else {
+			console.log("run");
 			table.update(
 				{"id":article.id}, 
 				{"$set":{
@@ -153,6 +155,7 @@ Analyzer.prototype.run_tweet = function(tweet,table){
 		}
 	})
 }
+
 
 
 module.exports = Analyzer;
