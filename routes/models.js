@@ -54,8 +54,10 @@ router.get('/entities',function(req,resp){
 		resp.json({error:true,error_object:err});
 	})
 })
+
 //Get Entidades -> Get Relaciones -> Get Weight Hash -> Get Articles -> Set score per article
 router.get('/run', function(req, resp) {
+	var counter = 0;
 	//Get Entidades
 	Ent.getEntidades().then(function(values){
 		var entities = values;
@@ -66,13 +68,14 @@ router.get('/run', function(req, resp) {
 			RankedItem.getWeightHash(entities, relations).then(function(values) {
 				var weights = values;
 				//Get Articles
-				NSQL_CONN.articles.find({'migrated': {$exists : false} }).then(function(values){
+				NSQL_CONN.articles.find({'migrated': {'$exists' : false} }).then(function(values){
 					console.log("enterered");
 					console.log(values);
 					try{
 						for (var index in values) {
 							var article = values[index];
-							var item = new RankedItem(1, article.title, article.date, article.source, weights, article.analysis.entities, article.analysis.relations, SQL_CONN);
+							var item = new RankedItem(article.id, article.title, article.date, article.source, weights, article.analysis.entities, article.analysis.relations, SQL_CONN);
+							item.
 							item.setScoreArticle();
 
 							console.log(item);

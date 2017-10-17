@@ -26,9 +26,10 @@ module.exports = class RankedItem {
 			}
 		});
 	};
-	constructor(fuente, textoInteres, fecha, href, weights, entities, relations, db) {
+	constructor(id,textoInteres, fecha, href, weights, entities, relations, db) {
 		this.table = "items";
-		this.fuente = fuente;
+		this.id = id;
+		//this.fuente = fuente;
 		this.textoInteres = textoInteres;
 		this.fecha = fecha;
 		this.href = href;
@@ -38,9 +39,17 @@ module.exports = class RankedItem {
 		this.score = 0;
 		this.db = db;
 	};
+	getArticleFuente(){
+		var slf = this;
+		return new Promise(function(resolve, reject){
+			slf.db.get('fuentes',['id'],['cadenaid','=',slf.id.substr(0,6)]).then(function(source_id){
+				return resolve(source_id[0]);
+			})
+		})
+	}
 	setScoreArticle() {
+		var slf = this;
 		return new Promise(function(resolve, reject) {
-			var slf = this;
 			try {
 				var score = 0;
 				//Add Entities

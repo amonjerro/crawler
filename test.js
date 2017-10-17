@@ -1,5 +1,3 @@
-var blep = {'id':12345,'name':'Waka Waka'};
-var blep_keys = Object.keys(blep);
+var s = 'WS-CE-sldkfjasldfkjasdlk';
 
-
-console.log(blep_keys);
+console.log(s.substr(0,6));
